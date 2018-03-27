@@ -1,11 +1,11 @@
 #! Python
-# Goes to bookshelf and downloads blue box questions from the CFA textbooks
+# Modded to grab EOC questions from CFA books
 
 import requests, json, re, os
 from bs4 import BeautifulSoup
 
-username = input('Please type in your E-mail: ')
-password = input('Please type in your password: ')
+username = input('Please type in your E-mail:')
+password = input('Please type in your password:')
 
 # Provide username and password
 payload = {
@@ -19,7 +19,7 @@ Level = input('What Level? (I,II,III): ')
 
 # Creating a folder for the documents
 startingLocation = os.path.abspath(os.curdir)
-location = startingLocation + '\CFABlueBoxes'
+location = startingLocation + '/CFABlueBoxes'
 if not os.path.exists(location):
     os.makedirs(location)
 os.chdir(location)
@@ -44,7 +44,7 @@ with requests.Session() as s:
         parsed_tableOfContents = json.loads(tableOfContents)
         readingList = []
         readingRegex = re.compile(r'Reading\s{1,10}\d{1,3}')
-        newLocation = startingLocation + '\CFABlueBoxes' + r'\ ' + book['title']
+        newLocation = startingLocation + '/CFABlueBoxes' + r'\ ' + book['title']
         if not os.path.exists(newLocation):
             os.makedirs(newLocation)
         os.chdir(newLocation)
@@ -62,8 +62,8 @@ with requests.Session() as s:
             title = subReading['title']
             #title = " ".join(re.findall("[a-zA-Z]+", title))
             print('Now Scraping Reading: %s' % title)
-            # Grabbing all of the blue boxes which are denoted by "figure" in the HTML
-            figures = soupReading.findAll("figure", {"class": "example"})
+            # Grabbing all of the EOC which are denoted by "ol" in the HTML
+            figures = soupReading.findAll("ol", {"class": "order"})
             if len(figures) >= 1:
                 readingFile = open('%s.html' % title, 'wb')
                 for figure in figures:
